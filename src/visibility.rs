@@ -57,7 +57,11 @@ impl Plugin for VisibilityPlugin {
             PostUpdate,
             (mark_visible_lights, mark_visible_occluders)
                 .chain()
-                .in_set(VisibilitySystems::CheckVisibility),
+                .in_set(VisibilitySystems::CheckVisibility)
+                // After Bevy's culling, which clears each view's visible entities:
+                // run before it and the lights pushed here are wiped (no light shows).
+                .after(bevy::camera::visibility::check_visibility_cpu_culling)
+                .after(bevy::camera::visibility::check_visibility_gpu_culling),
         );
     }
 }
