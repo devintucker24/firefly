@@ -1,17 +1,9 @@
+@if(TONEMAP_IN_SHADER)
+import bevy_core_pipeline::tonemapping;
+import bevy_render::maths::affine3_to_square;
+import bevy_sprite_render::render::sprite_view_bindings::view;
+
 enable f16;
-
-#ifdef TONEMAP_IN_SHADER
-#import bevy_core_pipeline::tonemapping
-#endif
-
-#import bevy_render::{
-    maths::affine3_to_square,
-    view::View,
-}
-
-#import firefly::types::SpriteId
-
-#import bevy_sprite::sprite_view_bindings::view
 
 struct VertexInput {
     @builtin(vertex_index) index: u32,

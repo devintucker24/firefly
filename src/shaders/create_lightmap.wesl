@@ -1,23 +1,20 @@
-enable f16;
+import bevy_core_pipeline::fullscreen_vertex_shader::FullscreenVertexOutput;
+@if(TONEMAP_IN_SHADER)
+import bevy_core_pipeline::tonemapping;
 
-#import bevy_core_pipeline::fullscreen_vertex_shader::FullscreenVertexOutput
-#import bevy_render::view::View
-
-#ifdef TONEMAP_IN_SHADER
-#import bevy_core_pipeline::tonemapping
-#endif
-
-#import firefly::types::{
-    view, PointLight, LightingData, PolyOccluder, RoundOccluder, OccluderPointer, 
+import package::shaders::types::{
+    view, PointLight, PolyOccluder, RoundOccluder, OccluderPointer,
     FireflyConfig, BinIndices, N_BINS,
-}
+};
 
-#import firefly::utils::{
+import package::shaders::utils::{
     ndc_to_world, frag_coord_to_ndc, orientation, same_orientation, intersect, blend, 
     shadow_blend, intersects_arc, rotate, rotate_arctan, between_arctan, distance_point_to_line,
     intersection_point, rect_intersection, rect_line_intersection, intersects_axis_edge, intersects_corner_arc,
     rotate_90, rotate_90_cc, intersects_half, falloff
-}
+};
+
+enable f16;
 
 @group(1) @binding(0)
 var texture_sampler: sampler;
@@ -77,9 +74,8 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4f {
 
     var light_color = light.color;
 
-#ifdef TONEMAP_IN_SHADER
+    @if(TONEMAP_IN_SHADER)
     light_color = tonemapping::tone_mapping(light_color, view.color_grading);
-#endif
 
     // light_color = pow(light_color, vec4<f32>(2.2));
 
