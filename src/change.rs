@@ -14,7 +14,14 @@ pub struct ChangePlugin;
 impl Plugin for ChangePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreUpdate, reset_changes);
-        app.add_systems(Update, (changed_occluders, changed_lights));
+        // After transforms propagate, so this frame's moves count; one after the
+        // other, so the two never run unordered (they touch `Changes` both).
+        app.add_systems(
+            PostUpdate,
+            (changed_occluders, changed_lights)
+                .chain()
+                .after(TransformSystems::Propagate),
+        );
     }
 }
 
