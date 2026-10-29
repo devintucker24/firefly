@@ -48,5 +48,8 @@ fn fragment(vo: FullscreenVertexOutput) -> @location(0) vec4<f32> {
 
     let scene_frag = textureSample(screen_texture, texture_sampler, vo.uv);
     
-    return scene_frag * light_frag;
+    // Light the colour only. The light map's alpha is 0 wherever only the ambient light reaches, so lighting
+    // the alpha too left the scene see-through: a window ignores alpha, but an image target shown by an
+    // editor or a UI does not.
+    return vec4f(scene_frag.rgb * light_frag.rgb, scene_frag.a);
 }
